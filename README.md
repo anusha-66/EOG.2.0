@@ -1,7 +1,4 @@
-Note: Work In Progress : (Working with rlatively new technologies, so figuring it out (Had less time to completely submit the result and didnt work on GraphQL and urQL before, they are sort of interesting :) )
-
-I was given this assignment last night, and was able to do the dropdown implementation from getMetrics graphQL schema
-Was stcuk at looking for ways to incorporate multiple Queries in one file using urQL
+Note: Work In Progress : (Working with rlatively new technologies)
 However, was able to successfully translate all schema into Queries:
 
 Get Metrics:
