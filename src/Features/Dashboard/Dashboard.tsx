@@ -69,25 +69,10 @@ query {
 }
 `;
 
-// const anotherQuery = `
-//     query {
-//         getMeasurements(input: {metricName: "flareTemp"}) {
-//             metric
-//             value
-//             unit
-//             at
-//           }
-//     }
-// `
-
 const getMetricList = (state: IState) => {
   const { metrics } = state.dashboard;
   return metrics;
 };
-
-
-
-
 
 export default () => {
   return (
@@ -110,9 +95,7 @@ const Dashboard = () => {
   });
 
   const { fetching, data, error } = result;
-//   console.log(fetching);
-//   console.log(data);
-//   console.log(error);
+
   useEffect(() => {
     if (error) {
       dispatch(actions.metricDataReceivedApiError({ error: error.message }));
@@ -128,8 +111,6 @@ const Dashboard = () => {
   const handleChange = (event : any) => {
     setMetricValue(event.target.value);
   };
-
-//   function Cards(props: { metricValue: any }) {}
 
 
 return <> 
@@ -159,7 +140,7 @@ return <>
           ))}
         </Select>
       </FormControl>
-      {metricValue.length > 0 && <Cards metricValue={metricValue}/>}
+      
       {metricValue.length > 0 && <Graph metricValue={metricValue}/>}
 </>;
 };

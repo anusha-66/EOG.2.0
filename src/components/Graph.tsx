@@ -4,6 +4,7 @@ import { actions } from '../Features/Dashboard/reducer';
 import { Provider, createClient, useQuery } from 'urql';
 import { IState } from '../store';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Cards from './Cards';
 
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -15,20 +16,17 @@ const getMeasurementList = (state: IState) => {
     return measurements;
 };
 
-type CardsProps = {
-    metricValue: []
-}
+
 
 export default (props: { metricValue: any }) => {
 
-    console.log(props.metricValue, "mval");
+   
 
+    console.log(props.metricValue, "mval");
 
     const client = createClient({
         url: 'https://react.eogresources.com/graphql',
     });
-
-
 
     const query = `
       query {
@@ -55,8 +53,8 @@ export default (props: { metricValue: any }) => {
 
     const dispatch = useDispatch();
     const listOfMeasurements = useSelector(getMeasurementList);
-    const finalList = listOfMeasurements.map((x: any) => x.measurements.slice(0, 10));
-    console.log(finalList, "FL");
+    const finalList = listOfMeasurements.map((x: any) => x.measurements.slice(0, 1000));
+    // console.log(finalList, "FL");
 
     const pastMinute = new Date().getTime() - 60000;
     const [result] = useQuery({
@@ -71,58 +69,50 @@ export default (props: { metricValue: any }) => {
             return;
         }
         if (!data) return;
-        //    const { getMeasurements } = data;
         dispatch(actions.measurementsDataReceived(data));
     }, [dispatch, data, error]);
 
     if (fetching) return <LinearProgress />;
 
-    // let selectiveList = [...finalList];
-    // console.log('selectiveList', selectiveList);
-
-    let selectiveList:any = [];
-    props && props.metricValue && props.metricValue.length >0 && props.metricValue.map((element:any) => {
-        let key:any = [];
-        finalList && finalList.map(secondElement=> {
-           secondElement.map((thirdElement:any) => {
-           if(thirdElement.metric == element) key.push(thirdElement); 
-           })
+    let selectiveList: any = [];
+    props && props.metricValue && props.metricValue.length > 0 && props.metricValue.map((element: any) => {
+        let key: any = [];
+        finalList && finalList.map(secondElement => {
+            secondElement.map((thirdElement: any) => {
+                if (thirdElement.metric == element) key.push(thirdElement);
+            })
         });
         selectiveList.push(key);
     });
-    
-    console.log(selectiveList, "Ans");
 
-//     let d = [];
-// a.map(element => {
-//     let key = [];
-//     b.map(secondElement => {
-//         secondElement.map(thirdElement => {
-//             if (thirdElement.metric == element) key.push(thirdElement);
-//         })
-//     });
-//     d.push(key);
-
-// });
-
+    // console.log(selectiveList, "Ans");
+   
+    const ComponentProps = {
+        metricValue:props.metricValue,
+        selectiveListData: selectiveList
+    }
 
     return (
         <Provider value={client}>
+            {props.metricValue.length > 0 && <Cards {...ComponentProps}/>}
 
-            <LineChart width={600} height={300}>
+            <LineChart width={1000} height={400}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="at" allowDuplicatedCategory={false} />
-                <YAxis dataKey="value"  />
+                <YAxis dataKey="value" />
                 <Tooltip />
                 <Legend />
-                {selectiveList.map((s:any) => (
-                    <Line dataKey="value" data={s} name={s.metric} key={s.metric} />
+                {selectiveList.map((s: any) => (
+                    <Line 
+                        dataKey="value" 
+                        data={s} 
+                        name={s.metric} 
+                        key={s.metric}
+                        stroke={
+                            "#" + (((1 << 24) * Math.random()) | 0).toString(16)
+                          } />
                 ))}
             </LineChart>
-
-
-
-
         </Provider>
     );
 
