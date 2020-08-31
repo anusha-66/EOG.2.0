@@ -31,7 +31,6 @@ const slice = createSlice({
 
       measurementsDataReceived: (state, action: PayloadAction<MeasurementData>) => {
         const { getMultipleMeasurements } =  action.payload;
-        console.log(action.payload, "measuhs");
         state.measurements = getMultipleMeasurements;
         
       },

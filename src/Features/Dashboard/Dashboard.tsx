@@ -19,45 +19,50 @@ import Chip from '@material-ui/core/Chip';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 
 
+//Styles
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-      display: "flex",
-      flexWrap: "wrap",
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 300,
-      maxWidth: 400
-    },
-    chips: {
-      display: "flex",
-      flexWrap: "wrap"
-    },
-    chip: {
-      margin: 2,
-      backgroundColor: "white"
-    },
-    noLabel: {
-      marginTop: theme.spacing(3)
-    }
-  }));
-
-const MenuProps = {
-    PaperProps: {
-      style: {
-        width: 300
-      }
-    }
-  };
-
-  function getStyles(metric : string, metricValue : string[], theme: Theme) {
-    return {
-      fontWeight:
-        metricValue.indexOf(metric) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium
-    };
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 300,
+    maxWidth: 400
+  },
+  chips: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  chip: {
+    margin: 2,
+    backgroundColor: "white"
+  },
+  noLabel: {
+    marginTop: theme.spacing(3)
   }
+}));
+
+
+// Component Props
+const MenuProps = {
+  PaperProps: {
+    style: {
+      width: 300
+    }
+  }
+};
+
+function getStyles(metric: string, metricValue: string[], theme: Theme) {
+  return {
+    fontWeight:
+      metricValue.indexOf(metric) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium
+  };
+}
+
+//Calling getMetrics Query and Dispactching action to get data via selector
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -83,15 +88,17 @@ export default () => {
 };
 
 const Dashboard = () => {
+
+  // Variables
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const  listOfMetrics  = useSelector(getMetricList);
-//console.log(listOfMetrics);
+  const listOfMetrics = useSelector(getMetricList);
   const [metricValue, setMetricValue] = React.useState([]);
+
   const [result] = useQuery({
     query,
-    
+
   });
 
   const { fetching, data, error } = result;
@@ -108,40 +115,39 @@ const Dashboard = () => {
 
   if (fetching) return <LinearProgress />;
 
-  const handleChange = (event : any) => {
+  const handleChange = (event: any) => {
     setMetricValue(event.target.value);
   };
 
+  //View (Select Dropdown)
+  return <>
+    <FormControl className={classes.formControl}>
+      <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
+      <Select
+        labelId="demo-mutiple-chip-label"
+        id="demo-mutiple-chip"
+        multiple
+        value={metricValue}
+        onChange={handleChange}
+        input={<Input id="select-multiple-chip" />}
+        renderValue={(selected) => (
+          <div className={classes.chips}>
+            {(selected as string[]).map((value) => (
+              <Chip key={value} label={value} className={classes.chip} />
+            ))}
+          </div>
+        )}
+        MenuProps={MenuProps}
+      >
+        {listOfMetrics.map((metric) => (
+          <MenuItem key={metric} value={metric} >
+            {metric}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
 
-return <> 
-{/* {listOfMetrics} */}
-        <FormControl className={classes.formControl}>
-        <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
-        <Select
-          labelId="demo-mutiple-chip-label"
-          id="demo-mutiple-chip"
-          multiple
-          value={metricValue}
-          onChange={handleChange}
-          input={<Input id="select-multiple-chip" />}
-          renderValue={(selected) => (
-            <div className={classes.chips}>
-              {(selected as string[]).map((value) => (
-                <Chip key={value} label={value} className={classes.chip} />
-              ))}
-            </div>
-          )}
-          MenuProps={MenuProps}
-        >
-          {listOfMetrics.map((metric) => (
-            <MenuItem key={metric} value={metric} >
-              {metric}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      
-      {metricValue.length > 0 && <Graph metricValue={metricValue}/>}
-</>;
+    {metricValue.length > 0 && <Graph metricValue={metricValue} />}
+  </>;
 };
 

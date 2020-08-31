@@ -5,12 +5,11 @@ import { Provider, createClient, useQuery } from 'urql';
 import { IState } from '../store';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Cards from './Cards';
-
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
 
-
+//Defining Reducer
 const getMeasurementList = (state: IState) => {
     const { measurements } = state.dashboard;
     return measurements;
@@ -20,9 +19,7 @@ const getMeasurementList = (state: IState) => {
 
 export default (props: { metricValue: any }) => {
 
-   
-
-    console.log(props.metricValue, "mval");
+     //Calling getMultipleMeasurements Query and Dispactching action to get data via selector
 
     const client = createClient({
         url: 'https://react.eogresources.com/graphql',
@@ -51,17 +48,16 @@ export default (props: { metricValue: any }) => {
       }
       `
 
+    //Variables
     const dispatch = useDispatch();
     const listOfMeasurements = useSelector(getMeasurementList);
     const finalList = listOfMeasurements.map((x: any) => x.measurements.slice(0, 1000));
-    // console.log(finalList, "FL");
 
-    const pastMinute = new Date().getTime() - 60000;
     const [result] = useQuery({
         query
     });
 
-
+    //Action Dispatching
     const { fetching, data, error } = result;
     useEffect(() => {
         if (error) {
@@ -74,6 +70,7 @@ export default (props: { metricValue: any }) => {
 
     if (fetching) return <LinearProgress />;
 
+    //Fetching only neccessary data from response
     let selectiveList: any = [];
     props && props.metricValue && props.metricValue.length > 0 && props.metricValue.map((element: any) => {
         let key: any = [];
@@ -85,13 +82,13 @@ export default (props: { metricValue: any }) => {
         selectiveList.push(key);
     });
 
-    // console.log(selectiveList, "Ans");
-   
+   //Component Props
     const ComponentProps = {
         metricValue:props.metricValue,
         selectiveListData: selectiveList
     }
 
+    //View (Graph)
     return (
         <Provider value={client}>
             {props.metricValue.length > 0 && <Cards {...ComponentProps}/>}
