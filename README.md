@@ -32,10 +32,6 @@ query {
   }
 }
 
-Get last known measurements,
-
-Ran out of time before i could integrate them, Interesting technologies, would like to explore more
-
 ## Create React App Visualization
 
 This assessment was bespoke handcrafted for Anusha Ganti.
