@@ -1,5 +1,7 @@
-Note: Work In Progress : (Working with rlatively new technologies)
-However, was able to successfully translate all schema into Queries:
+Updating Read Me, 
+Previous Read.me was old.
+
+PROJECT IS FULLY COMPLETE.
 
 Get Metrics:
 query{
