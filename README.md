@@ -1,6 +1,3 @@
-Updating Read Me, 
-Previous Read.me was old.
-
 PROJECT IS FULLY COMPLETE.
 
 Get Metrics:
